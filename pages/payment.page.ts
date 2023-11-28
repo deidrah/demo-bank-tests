@@ -1,8 +1,12 @@
 import { Page } from '@playwright/test';
+import { SideMenuComponent } from '../components/side-menu.component';
 
 
 export class PaymentPage {
   constructor(private page: Page) {}
+
+
+  sideMenuComponent = new SideMenuComponent(this.page);
 
 
   transferReceiverInput = this.page.getByTestId('transfer_receiver');
@@ -14,5 +18,16 @@ export class PaymentPage {
   actionCloseButton = this.page.getByTestId('close-button');
 
 
-  messageText = this.page.locator('#show_messages')
+  messageText = this.page.locator('#show_messages');
+
+
+  async makeTransfer(transferReceiver: string, transferAccount: string, transferAmount: string): Promise<void> {
+    await this.transferReceiverInput.fill(transferReceiver);
+    await this.transferToInput.fill(transferAccount);
+    await this.transferAmountInput.fill(transferAmount);
+
+
+    await this.transferButton.click();
+    await this.actionCloseButton.click();
+  }
 }

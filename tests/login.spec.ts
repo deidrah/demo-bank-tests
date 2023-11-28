@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { loginData } from './test-data/login.data';
+import { loginData } from '../test-data/login.data';
 import { LoginPage } from '../pages/login.page';
 import { PulpitPage } from '../pages/pulpit.page';
 
 
 test.describe('User login to Demobank', () => {
+  let loginPage: LoginPage;
+
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    loginPage = new LoginPage(page);
   });
 
 
@@ -18,10 +22,7 @@ test.describe('User login to Demobank', () => {
 
 
     // Act
-    const loginPage = new LoginPage(page);
-    await loginPage.loginInput.fill(userId);
-    await loginPage.passwordInput.fill(userPassword);
-    await loginPage.loginButton.click();
+    await loginPage.login(userId, userPassword);
 
 
     // Assert
@@ -37,9 +38,8 @@ test.describe('User login to Demobank', () => {
 
 
     // Act
-    const loginPage = new LoginPage(page);
-    await loginPage.loginInput.fill(incorrectUserId);
-    await loginPage.passwordInput.click();
+    const loginPage = new LoginPage(page)
+    await loginPage.fillLoginCredentials(incorrectUserId, '')
 
 
     // Assert
@@ -57,7 +57,6 @@ test.describe('User login to Demobank', () => {
 
 
     // Act
-    const loginPage = new LoginPage(page);
     await loginPage.loginInput.fill(userId);
     await loginPage.passwordInput.fill(incorrectPassword);
     await loginPage.passwordInput.blur();
